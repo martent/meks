@@ -1,40 +1,28 @@
-= javascript_include_tag 'https://www.gstatic.com/charts/loader.js'
-:javascript
-  google.charts.load("current", { packages: ["corechart"] });
-
 - cache "view-#{@cache_key_for_status}" do
   - title 'Översikt'
   %section.box.show.statistics
     %h1.box-title= h1
     .box-content.basic
-
-      .chart-box
-        = render 'chart'
-
-      - @stats[:periods].each do |period|
-        %h2.group-title= period[:title]
-
-        %p
-          = "#{period[:data][:refugees]} barn"
-          = "(#{period[:data][:per_gender]})"
-        %p= "#{period[:data][:in_transit]} är i ankomst"
-        %p= raw "#{period[:data][:with_residence_permit]} har <abbr title='Permanent uppehållstillstånd'>PUT</abbr>"
-        %p= "#{period[:data][:with_municipality_placement_in_malmo_srf]} har anvisning till Malmö Srf"
-        %p= "#{period[:data][:with_municipality_placement_in_malmo_sdo]} har anvisning till Malmös stadsområden"
-        %p= "#{period[:data][:with_municipality_placement_others]} har anvisning till andra kommuner"
-        %p= "#{period[:data][:with_no_municipality_placement]} saknar anvisning"
-        %p= "#{period[:data][:with_municipality_placement_and_not_deregistered]} har anvisning och har ännu inte avslutats"
-        %p= "#{period[:data][:with_municipality_placement_in_malmo_and_deregistered]} har anvisning i annan kommun och har avslutats"
-        %p= "#{period[:data][:at_external_home]} barn är placerade på externa placeringar"
-        %p
-          = "Vanligaste länder (10 barn eller fler):"
-          = period[:data][:top_countries][0...3].map(&:first).join(', ')
-
-      %h2.group-title Boenden och placeringar
+      %h2.group-title Aktuella ärenden
+      %p #{in_arrival} personer är i ankomst i väntan på anvisning
       %p
-        = "Det är för närvarande #{@stats[:current_placed_refugees].count} barn placerade."
-        = "#{@stats[:current_placements_per_owner_type]} boenden."
+        Malmö stad ansvarar för #{our_municipality_people.count} personer,
+        varav #{our_municipality_genders.join(', ')}
+      %p Vanligaste nationaliteterna är #{top_countries}
+      %p #{people_waiting_for_verdict} personer är asylsökande och väntar på beslut i asylärendet
+      %p #{people_with_residence_permit} personer har PUT
+      %p #{people_with_temporary_permit} personer har TUT
+      %p #{people_with_citizenship} personer har erhållit svenskt medborgarskap
+      %p #{people_without_ekb} personer är inte EKB
+
+      %h2.group-title Placeringar och boenden
+      %p #{people_on_hvb} personer är placerade på kommunala HVB
+      %p #{people_on_outward_home} personer är placerade på kommunala stödboenden
+      %p #{externaly_placed_people} personer är externt placerade
+      %p #{people_on_emergency_home} personer är placerade i jourhem
+      %p #{people_on_family_home} personer är placerade i familjehem
+      %p #{people_on_network_home_unprocessed} personer är placerade i nätverkshem, outrett
+      %p #{people_on_network_home_processed} personer är placerade i nätverkshem, utrett
       %p
-        = "Det finns #{@stats[:homes]} boenden med #{@stats[:guaranteed_seats] + @stats[:movable_seats]} boendeplatser."
-        = "Av dessa är #{@stats[:guaranteed_seats]} garantiplatser och #{@stats[:movable_seats]} rörliga."
-      %p= "Av boenden är #{@stats[:home_by_owner_type]}"
+        Malmö stad har #{number_of_homes} kommunala HVB
+        samt stödboende med #{guaranteed_seats} boendeplatser

@@ -1,0 +1,32 @@
+status[:records].each_with_index do |record, row|
+  person = record[:person]
+
+  sheet.add_row(
+    [
+      person.dossier_number,
+      person.procapita,
+      person.ssn,
+      person.ssns.map(&:full_ssn).join(', '),
+      person.municipality&.name,
+      sum_formula(record[:rates]),
+      "=(#{record[:days]})"
+    ],
+    style: @style.normal
+  )
+  sheet.rows[row + 1].cells[5].style = @style.currency
+end
+
+if status[:records].present?
+  sheet.add_row(
+    [
+      'SUMMA:',
+      '',
+      '',
+      '',
+      '',
+      "=SUM(F2:F#{status[:records].size + 1})",
+      "=SUM(G2:G#{status[:records].size + 1})"
+    ],
+    style: @style.sum
+  )
+end

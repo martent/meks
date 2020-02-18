@@ -1,4 +1,5 @@
 class SamlController < ApplicationController
+  before_action :reset_session_keys, only: [:consume, :sso, :logout]
   skip_authorize_resource
   skip_authorization_check
   skip_before_action :authenticate
@@ -33,6 +34,7 @@ class SamlController < ApplicationController
           # Establish session and redirect to the page requested by user
           session[:user_id] = user.id
           logger.info "[SAML_AUTH] #{user.username} logged in from #{client_ip}"
+          update_session
           redirect_after_login
         end
       else
@@ -42,7 +44,7 @@ class SamlController < ApplicationController
       end
     rescue => e
       logger.fatal "[SAML_AUTH] SAML response for #{client_ip} failed. #{e.message}"
-      logger.fatal e
+      logger.fatal e.backtrace.inspect
       @error_message = 'Inloggning med SAML misslyckades.'
       render :fail
     end
@@ -55,7 +57,7 @@ class SamlController < ApplicationController
 
   def logout
     # Placeholder for SAML SLO implementation
-    reset_session
+    reset_session_keys
     redirect_to root_path, notice: 'Du är utloggad från MEKS'
   end
 
@@ -71,16 +73,16 @@ class SamlController < ApplicationController
     # Metadata URI settings
     # Returns OneLogin::RubySaml::Settings prepopulated with idp metadata
     # idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
-    # settings = idp_metadata_parser.parse_remote @config['idp_metadata']
+    # settings = idp_metadata_parser.parse_remote @config[:idp_metadata]
 
     settings = OneLogin::RubySaml::Settings.new
     settings.issuer                         = base_url
-    settings.idp_sso_target_url             = @config['idp_sso_target_url']
+    settings.idp_sso_target_url             = @config[:idp_sso_target_url]
     settings.assertion_consumer_service_url = "#{base_url}/saml/consume"
 
     # Non-metadata URI settings
-    # settings.idp_cert                       = @config['idp_cert']
-    settings.idp_cert_fingerprint           = @config['idp_cert_fingerprint']
+    # settings.idp_cert                       = @config[:idp_cert]
+    settings.idp_cert_fingerprint           = @config[:idp_cert_fingerprint]
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2000/09/xmldsig#sha1'
     settings.name_identifier_format         = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
     settings.authn_context                  = 'urn:oasis:names:tc:SAML:2.0:ac:classes:MobileTwoFactorUnregistered'

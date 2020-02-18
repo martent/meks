@@ -1,4 +1,5 @@
-class OwnerType < ActiveRecord::Base
+# 'Boenden, ägarformer'
+class OwnerType < ApplicationRecord
   has_many :homes, dependent: :nullify
 
   validates_uniqueness_of :name, case_sensitive: false

@@ -1,5 +1,6 @@
-class DeregisteredReason < ActiveRecord::Base
-  has_many :refugees, dependent: :nullify
+# "Avslutsorsak"
+class DeregisteredReason < ApplicationRecord
+  has_many :people, dependent: :nullify
 
   validates_uniqueness_of :name, case_sensitive: false
   validates_presence_of :name

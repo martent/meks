@@ -38,13 +38,7 @@ SimpleForm.setup do |config|
       label.use :label
     end
     b.wrapper tag: 'div', class: 'input-group date' do |ba|
-      ba.use :input, class: 'form-control'
-      ba.wrapper tag: 'span', class: 'input-group-addon' do |x|
-        x.wrapper tag: 'span', class: 'm-icon-calendar' do |y|
-        end
-      end
-    end
-    b.wrapper tag: 'span', class: 'no-control-label' do |label|
+      ba.use :input, class: 'form-control date', autocomplete: 'off'
     end
     b.wrapper tag: 'div', class: 'input-group' do |ba|
       b.use :error, wrap_with: { tag: 'span', class: 'help-block' }

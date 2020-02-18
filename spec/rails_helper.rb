@@ -2,31 +2,50 @@
 ENV['RAILS_ENV'] ||= 'local_test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 
 require 'rspec/rails'
-require 'haml'
-require 'factory_girl_rails'
-require 'cancan/matchers'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
+require 'cancan/matchers'
 
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new(
+    args: %w[headless disable-gpu no-sandbox]
+  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+Capybara.javascript_driver = :chrome
+Capybara.server = :puma, { Silent: true }
+Capybara.default_max_wait_time = 1
 
 # config.include for :view dosn't work in the config block
 include IntegrationMacros
 
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
+  config.include UnitMacros
+  config.include ModelMacros, type: :model
   config.include IntegrationMacros, type: :controller
   config.include IntegrationMacros, type: :view
+  config.include IntegrationMacros, type: :feature
+  config.include ApplicationHelper, type: :view
+
+  # [:controller, :view, :request].each do |type|
+  #   config.include ::Rails::Controller::Testing::TestProcess, type: type
+  #   config.include ::Rails::Controller::Testing::TemplateAssertions, type: type
+  #   config.include ::Rails::Controller::Testing::Integration, type: type
+  # end
+
+  config.before(:each) do
+    Capybara.reset_sessions!
+  end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -34,7 +53,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = false
+  # config.use_transactional_fixtures = false # Removed in Rails 5.1.
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -43,7 +62,7 @@ RSpec.configure do |config|
   # You can disable this behaviour by removing the line below, and instead
   # explicitly tag your specs with their type, e.g.:
   #
-  #     RSpec.describe UsersController, :type => :controller do
+  #     RSpec.describe UsersController, type: :controller do
   #       # ...
   #     end
   #
@@ -57,6 +76,8 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.order = :random
+
+  config.example_status_persistence_file_path = '.rspec-failures'
 
   # From old spec_helper
   config.expect_with :rspec do |expectations|

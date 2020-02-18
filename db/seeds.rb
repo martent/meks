@@ -22,8 +22,8 @@ end
   TargetGroup.create(name: htg)
 end
 
-['Villa Vånga', 'Tempo', 'Villa poppel', 'Tempo', 'Jourhem', 'Maglarp 1', 'Maglarp 2', 'Maglarp 2', 'Humania', 'Duvan', 'Maglarp 1', 'Maglarp 2', 'Maglarp 2', 'Maglarp 1', 'Maglarp 1', 'Maglarp 2', 'Aleris T'].each do |h|
-  Home.create(
+['Villa Vånga', 'Tempo', 'Villa poppel', 'Tempo 2', 'Jourhem', 'Humania', 'Duvan', 'Maglarp 1', 'Maglarp 2', 'Maglarp 3', 'Maglarp 4', 'Maglarp 5', 'Maglarp 6', 'Maglarp 7', 'Maglarp 8', 'Maglarp 9', 'Aleris T'].each do |h|
+  h = Home.create(
     name: h,
     postal_town: 'Malmö',
     type_of_housing_ids: [rand(TypeOfHousing.count) + 1],
@@ -32,6 +32,19 @@ end
     guaranteed_seats: rand(100) + 1,
     movable_seats: rand(100) + 1
   )
+  type = rand(3)
+  if type.zero?
+    h.update_attribute(:type_of_cost, :cost_per_placement)
+  elsif type == 1
+    h.update_attribute(:type_of_cost, :cost_per_day)
+    h.costs << Cost.create(
+      amount: rand(1000...2500),
+      start_date: Date.today - rand(60...180).days,
+      end_date: Date.today - rand(-180...59).days
+    )
+  else
+    h.update_attribute(:type_of_cost, :cost_for_family_and_emergency_home)
+  end
 end
 
 ['Kvinna', 'Man', 'Annat'].each do |s|
@@ -48,6 +61,10 @@ end
 
 ['dubblett', 'syster', 'bror', 'kusin', 'annan släkting', 'annan'].each do |name|
   TypeOfRelationship.create(name: name)
+end
+
+['Kontaktperson', 'Kontaktfamilj', 'Särskilt kvalificerad kontaktperson'].each do |name|
+  ExtraContributionType.create(name: name)
 end
 
 locales = Rails.configuration.i18n.available_locales

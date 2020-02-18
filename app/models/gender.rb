@@ -1,5 +1,8 @@
-class Gender < ActiveRecord::Base
-  has_many :refugees, dependent: :nullify
+# 'Kön'
+class Gender < ApplicationRecord
+  has_many :people, dependent: :nullify
+
+  default_scope { order(:name) }
 
   validates_uniqueness_of :name, case_sensitive: false
   validates_presence_of :name

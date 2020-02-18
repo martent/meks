@@ -2,6 +2,8 @@
 /config/database.yml
 /config/deploy/staging.rb
 /config/deploy/production.rb
+.byebug_history
+.rspec-failures
 
 .DS_Store
 /.bundle
@@ -9,9 +11,16 @@
 
 
 # Ignore all logfiles and tempfiles.
-/log/*
+/log
 !/log/.keep
-/tmp/*
+/tmp
 !/tmp/.keep
 /reports/*.*
 !/reports/.keep
+
+# Ignore encrypted secrets key file.
+config/secrets.yml.key
+config/secrets.yml.enc
+
+*.sql
+/lab

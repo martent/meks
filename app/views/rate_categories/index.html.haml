@@ -1,0 +1,14 @@
+- title "Schablongrupper"
+%section.box.index
+  %h1.box-title= h1
+  %table.full.wrap
+    %thead
+      %tr
+        %th Namn
+        %th Har belopp
+
+    %tbody
+      - @rate_categories.each do |rate_category|
+        %tr
+          %td= link_to rate_category.human_name, edit_rate_category_path(rate_category)
+          %td= rate_category.current_rate? ? 'Ja' : 'Nej'

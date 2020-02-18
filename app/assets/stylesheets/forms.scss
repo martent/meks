@@ -1,4 +1,26 @@
 .mf-v4 {
+  // Sub form group with nested labels
+  form.basic .form-group .form-group {
+    margin-bottom: 7px;
+    .control-label {
+      display: block;
+      width: 100%;
+    }
+    .controls {
+      width: 100%;
+      margin-left: 0;
+      clear: both;
+    }
+  }
+  .remove.group {
+    margin-top: .8em;
+  }
+
+  input.integer,
+  input.decimal {
+    width: 12em;
+  }
+
   .input-group.input-daterange {
       width: 18em;
   }
@@ -42,6 +64,10 @@
     margin-bottom: .3em;
   }
 
+  .placement_moved_in_at .date input {
+    max-width: 9em;
+  }
+
   div.terms {
     padding-bottom: 1em;
     margin-bottom: 1em;
@@ -54,6 +80,24 @@
       }
       input.numeric.ssn-extension {
         width: 6em;
+      }
+    }
+
+    .form-group.home_costs_amount,
+    .form-group.rate_category_rates_amount {
+      input {
+        width: 9em;
+      }
+    }
+
+    .form-group.total-cost {
+      margin-bottom: 0;
+      .control-label {
+        float: none;
+        display: block;
+      }
+      input {
+        // width: 9em;
       }
     }
 
@@ -107,6 +151,20 @@
       font-size: 14px;
     }
   }
+  .help-block.file_instructions {
+    ol {
+      list-style-type: upper-latin;
+    }
+    li, p {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+  }
+  .warning {
+    ul li, p {
+      font-size: 14px;
+    }
+  }
 }
 
 .danger-zone {
@@ -121,11 +179,20 @@
 
 // Copy of .warning, for cancan
 .alert {
-    background: $warning-background;
-    border: $warning-border;
-    font-size: 14px;
-    @include radius(3px);
-    font-family: $sans-serif;
-    padding: .5em .8em;
-    margin-bottom: 1em;
+  background: $warning-background;
+  border: $warning-border;
+  font-size: 14px;
+  @include radius(3px);
+  font-family: $sans-serif;
+  padding: .5em .8em;
+  margin-bottom: 1em;
+}
+
+// Bootstrap popover override
+.popover {
+  font-family: $sans-serif;
+}
+
+.icon-info {
+  cursor: pointer;
 }

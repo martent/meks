@@ -1,0 +1,13 @@
+last_row = sheet.rows.size
+
+sheet.add_row(
+  [
+    'SUMMA:',
+    (1..11).map { nil },
+    (12..51).map { |i| "=SUM(#{Axlsx.col_ref(i)}3:#{Axlsx.col_ref(i)}#{last_row})" }
+  ].flatten
+)
+
+(0..51).each do |col|
+  sheet.rows.last.cells[col].style = @style.sum
+end

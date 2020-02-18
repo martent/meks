@@ -1,5 +1,6 @@
 class LoginController < ApplicationController
   before_action :redirect_if_saml, except: :destroy
+  before_action :reset_session_keys
   skip_authorize_resource
   skip_authorization_check
   skip_before_action :authenticate
@@ -55,10 +56,10 @@ class LoginController < ApplicationController
   end
 
   def destroy
-    reset_session
+    reset_session_keys
 
     if APP_CONFIG['auth_method'] == 'saml'
-      redirect_to Rails.application.secrets.saml['idp_slo_target_url']
+      redirect_to Rails.application.secrets.saml[:idp_slo_target_url]
     else
       redirect_to root_path, notice: 'Du är utloggad från MEKS'
     end
@@ -80,10 +81,11 @@ class LoginController < ApplicationController
       user = User.where(username: params[:username].strip.downcase).first
       if user
         session[:user_id] = user.id
+        update_session
         logger.debug { "Stubbed authenticated user #{current_user.id}" }
         redirect_after_login
       else
-        @error_message = "Användarnamnet finns inte"
+        @error_message = 'Användarnamnet finns inte'
         render 'new'
       end
     end

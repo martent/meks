@@ -9,7 +9,12 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
+  SESSION_TIME = APP_CONFIG['session_time']
+
   def log_user_on_request
+    logger.info "[REFERRER]       #{request.referrer}"
+    logger.info "[USER_ID]        #{session[:user_id]}"
+    logger.info "[RENEWED_AT]     #{session[:renewed_at]}"
     logger.info "[REQUESTED_BY]   #{current_user.present? ? current_user.username : 'Not authenticated'}"
     logger.info "[REQUESTED_FROM] #{client_ip}"
   end
@@ -23,14 +28,42 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_user
 
+  def default_legal_code
+    LegalCode.where(pre_selected: true).first&.id
+  end
+
   def authenticate
-    if !current_user
-      if !request.xhr?
+    logger.info '[AUTHENTICATE]'
+    if current_user && session_fresh?
+      update_session
+    else
+      logger.info "[USER_ID]       #{session[:user_id]}"
+      logger.info "[RENEWED_AT]    #{session[:renewed_at]}"
+      logger.info "[SESSION_FRESH] #{session_fresh?}"
+
+      reset_session_keys
+      unless request.xhr?
         # Remember where the user was about to go
         session[:requested_url] = request.fullpath
       end
+      flash.now[:warning] = "Du har varit inaktiv i #{SESSION_TIME} minuter och har loggats ut från MEKS" unless session_fresh?
       redirect_to login_path
     end
+  end
+
+  def reset_session_keys
+    reset_session
+    session[:user_id] = nil
+    session[:renewed_at] = nil
+  end
+
+  def session_fresh?
+    session[:renewed_at] && session[:renewed_at].to_time > Time.now - SESSION_TIME.minutes
+  end
+
+  def update_session
+    logger.info '[UPDATE_SESSION]'
+    session[:renewed_at] = Time.now
   end
 
   def redirect_after_login
@@ -56,7 +89,6 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound,
               ActionController::RoutingError,
-              ActionController::UnknownController,
               ActionController::MethodNotAllowed do |exception|
 
     logger.warn "#{exception.message}"

@@ -1,59 +1,67 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7.1'
-gem 'haml-rails', '0.9.0'
-gem 'sass-rails', '5.0.6'
-gem 'uglifier', '3.0.2'
-gem 'coffee-rails', '4.2.1'
-gem 'jquery-rails'
+gem 'rails', '5.2.4'
+gem 'haml-rails', '2.0.1'
+gem 'sassc-rails', '2.1.2'
+gem 'uglifier', '4.1.20'
+gem 'coffee-rails', '5.0.0'
 
-gem 'simple_form', '3.3.1'
-gem 'mysql2', '0.4.4'
-gem 'dalli', '2.7.6'
-gem 'elasticsearch-model', '0.1.9'
-gem 'elasticsearch-rails', '0.1.9'
-gem 'daemons', '1.2.4'
+# Version 1.5 that is included in Malmo Global Assets have bugs in the date range selector
+gem 'bootstrap-datepicker-rails', '1.8.0.1'
 
-gem 'net-ldap', '0.15.0'
-gem 'cancancan', '1.15.0'
-gem 'ruby-saml', '1.3.1'
+gem 'simple_form', '5.0.1'
+gem 'mysql2', '0.5.2'
+gem 'dalli', '2.7.10'
+gem 'elasticsearch-model', '6.1.0'
+gem 'elasticsearch-rails', '6.1.0'
+gem 'daemons', '1.3.1'
 
-gem 'axlsx', '2.0.1'
-gem 'delayed_job_active_record', '4.1.1'
+gem 'net-ldap', '0.16.1'
+gem 'cancancan', '3.0.1'
+gem 'ruby-saml', '1.11.0'
 
-gem 'whenever', '0.9.7', require: false
-gem 'highline', '1.7.8'
+gem 'caxlsx', '3.0.1'
+gem 'axlsx_rails'
+gem 'delayed_job_active_record', '4.1.3'
+
+gem 'whenever', '1.0.0', require: false
+gem 'highline', '2.0.2'
 gem 'execjs', '2.7.0'
 gem 'faker'
 
-gem 'bcrypt', '~> 3.1.11'
+gem 'rails-i18n', '~> 5.1'
+
+gem 'bcrypt', '~> 3.1.12'
+
+gem 'pry-rails'
 
 group :development do
-  gem 'capistrano', '3.6.1'
-  gem 'capistrano-rails', '1.1.7'
-  gem 'capistrano-rbenv', '2.0.4'
-  gem 'quiet_assets'
-  gem 'pry-rails'
-  gem 'web-console'
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'capistrano', '3.11.0', require: false
+  gem 'capistrano-rails', '1.4.0', require: false
+  gem 'capistrano-rbenv', '2.1.4', require: false
+  gem 'capistrano-bundler', '1.6.0', require: false
   gem 'bullet'
-end
-
-group :local_test do
-  gem 'factory_girl_rails'
-  gem 'capybara'
-  gem 'poltergeist'
-  gem 'database_cleaner'
-end
-
-group :development, :test, :local_test do
-  gem 'rspec-rails', '~> 3.5.2'
-end
-
-group :development, :test do
+  gem 'listen'
+  gem 'rails-erd'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 end
 
+group :local_test do
+  gem 'rspec-rails'
+  gem 'rails-controller-testing'
+  gem 'factory_bot_rails', '5.0.2'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'selenium-webdriver'
+end
+
+group :development, :local_test do
+  gem 'puma'
+end
+
 group :test, :production do
-  gem 'unicorn'
+  gem 'unicorn', '5.5.1'
 end

@@ -9,68 +9,118 @@ sv:
     error_notification:
       default_message: "Vänligen korrigera nedanstående markerade uppgifter."
 
+    options:
+      home:
+        type_of_cost:
+          cost_per_day: Dygnskostnad
+          cost_per_placement: Placeringskostnad
+          cost_for_family_and_emergency_home: Familje-/jourhemskostnad
+
+    # Used for popovers.
+    # :title is optional. Always end :content with a period.
+    info:
+      person:
+        extra_contributions:
+          title: Insatser
+          content: Om förändringar sker enligt avtal skall ny insats registreras. Redigera endast insatser om felaktiga uppgifter har registrerats.
+        procapita:
+          content: Kundnummer för personens ärende i Procapita.
+        other_relateds:
+          content: Registreras under fliken Allmänt.
+        transferred:
+          content: Kryssa i denna ruta om personen EJ formellt anvisats Malmö men där socialtjänstansvaret övertas.
+      placement:
+        placement_extra_costs:
+          title: Extra utgifter
+          content: Om förändringar sker enligt avtal skall ny extra utgift registreras. Redigera endast extra omkostnader om felaktiga uppgifter har registrerats.
+
     labels:
       defaults: &defaults
         name: Namn
+        description: Beskrivning
         home: Boende
-        refugee: Ensamkommande barn
+        person: Person
         comment: Kommentar
+        date: Datum
+        amount: Belopp
+        updated_at: Senast redigerad
 
-      refugee: &refugee
+      placement: &placement
+        <<: *defaults
+        moved_in_at: Placeringsdatum
+        moved_out_at: Utskrivningsdatum
+        moved_out_reason: Anledning till utskrivning
+        specification: Placeringsspecifikation
+        legal_code: Lagrum
+        cost: Placeringskostnad per dygn
+        cost_per_day: Genomsnittlig dygnskostnad
+        extra_cost: Extra utgift
+        extra_costs: Extra utgifter
+        family_and_emergency_home_cost: Familje/jourhemskostnad
+
+      placement_extra_cost:
+        <<: *defaults
+        amount: Belopp
+
+      person: &person
         <<: *defaults
         draft: Utkast
+        ekb: EKB
         registered: Inskriven
         special_needs: Insatsbild
         gender: Kön
         languages: Språk
         countries: Land
         ssn: Personnummer
+        extra_ssns: Extra personnummer
         date_of_birth: Födelsedag
+        age: Ålder
         ssn_extension: Fyra sista
         ssns:
           date_of_birth: Födelsedag
           extension: Fyra sista
         dossier_number: Dossiernummer
         dossier_numbers: Extra dossiernummer
+        procapita: Kundnummer
         secrecy: Sekretess
         sof_placement: SoF-placering
+        arrival: Ankomst
         homes: Boenden
         deregistered: Avslutad
         deregistered_reason: Avslutsorsak
         deregistered_comment: Avslutsorsak, kommentar
-        residence_permit_at: <abbr title='Permanent uppehållstillstånd'>PUT</abbr>
+        residence_permit_at: PUT
+        residence_permit: PUT
         checked_out_to_our_city: Utskriven till Malmö
-        temporary_permit_starts_at: <abbr title='Tillfälligt uppehållstillstånd startar'>TUT startar</abbr>
-        temporary_permit_ends_at: <abbr title='Tillfälligt uppehållstillstånd slutar'>TUT slutar</abbr>
+        temporary_permit_starts_at: TUT startar
+        temporary_permit_ends_at: TUT slutar
+        temporary_permit: TUT
+        designated: Anvisad
         citizenship_at: Medborgarskap erhölls
-        municipality: Anvisningskommun
+        municipality: Socialtjänst
         municipality_placement_migrationsverket_at: Anvisningsdatum
-        municipality_placement_per_agreement_at: Ingår i överenskommelse
+        transferred: Tillhört annan kommun
         municipality_placement_comment: Anvisad, kommentar
         related: Anhörig
         relateds: Anhöriga
         type_of_relationships: Anhörigform
         other_relateds: Anhöriga utanför systemet
         social_worker: Socialsekreterare
+        in_arrival: I ankomst
+        current_placement: Aktuellt boende
+        current_asylum: Status
         placements:
-          moved_in_at: Placeringsdatum
+          <<: *placement
 
       relationship:
         <<: *defaults
-        <<: *refugee
-        search_related: Sök anhörigt barn
+        <<: *person
+        search_related: Sök anhörig person
         related: Anhörig
         relateds: Anhöriga
         related_id: Anhörig-id
         type_of_relationship: Anhörigform
         other_relateds: Anhöriga utanför systemet
-
-      placement:
-        <<: *defaults
-        moved_in_at: Placeringsdatum
-        moved_out_at: Utskrivningsdatum
-        moved_out_reason: Anledning till utskrivning
-        specification: Placeringsspecifikation
 
       home:
         <<: *defaults
@@ -83,11 +133,99 @@ sv:
         owner_type: Ägarform
         target_groups: Målgrupp
         seats: Platser
+        costs: Dygnskostnad
         guaranteed_seats: Garantiplatser
         movable_seats: Rörliga platser
         languages: Språk
         active: Aktivt
         use_placement_specification: Använd placeringsspecifikation
+        type_of_cost: Form av kostnad
+
+      rate_category:
+        <<: *defaults
+        human_name: Namn
+        description: Villkor
+        age: Ålder
+
+      legal_code:
+        <<: *defaults
+        pre_selected: Förvald
+
+      municipality:
+        <<: *defaults
+        our_municipality: Vår kommun
+
+      payment_import: &payment_import
+        <<: *defaults
+        user: Importerad av
+        imported_at: Importerad
+        file: Fil
+        person: Person
+        person_id: Person
+        payments: Utbetalda schabloner
+        parse_errors: Tolkningsfel
+        original_filename: Ursprungligt filnamn
+        content_type: Filtyp
+
+      payment: &payment
+        <<: *payment_import
+        person_id: Person
+        amount: Belopp
+        period_start: Startdatum
+        period_end: Slutdatum
+
+      extra_contribution_type:
+        outpatient: Öppenvårdsinsats
+
+      extra_contribution:
+        <<: *defaults
+        extra_contribution_type: Insatsform
+        period_start: Startdatum
+        period_end: Slutdatum
+        fee: Arvode per månad
+        po_extra: Arbetsgivaravgift
+        expense: Omkostnad per månad
+        contractor_name: Uppdragstagare
+        contractor_birthday: Uppdragstagares födelsedag
+        contactor_employee_number: Uppdragstagares anställningsnummer
+        monthly_cost: Månadskostnad
+
+      family_and_emergency_home_costs:
+        period_start: Startdatum
+        period_end: Slutdatum
+        fee: Arvode per månad
+        expense: Omkostnad per månad
+        contractor_name: Uppdragstagare
+        contractor_birthday: Uppdragstagares födelsedag
+        contactor_employee_number: Uppdragstagares anställningsnummer
+
+      person_extra_cost:
+        <<: *defaults
+        amount: Kostnad
+
+      payments:
+        <<: *payment
+        person_id: Person
+
+      po_rate:
+        rate_under_65: Procentsats, under 65 år
+        rate_between_65_and_81: Procentsats, mellan 65 och 81 år
+        rate_from_82: Procentsats, från 82 år
+        start_date: Startdatum
+        end_date: Slutdatum
+
+      one_time_payment:
+        amount: Belopp
+        start_date: Startdatum
+        end_date: Slutdatum
+
+      settings: &settings
+        <<: *defaults
+        human_name: Namn
+        value: Värde
+
+      setting:
+        <<: *settings
 
     placeholders:
       home:
@@ -102,9 +240,14 @@ sv:
         name: Ange språknamn
       country:
         name: Ange landets namn
+      placement:
+        cost: kr
+      person:
+        placements:
+          cost: kr
 
     hints:
-      refugee:
+      person:
         comment: &comment
           "Tänk på att inte skriva in något känsligt i fältet"
         other_relateds: *comment
@@ -114,3 +257,5 @@ sv:
       placement:
         comment: *comment
         specification: "Namn på HVB samt namn på vårdföretag"
+      home:
+        comment: *comment

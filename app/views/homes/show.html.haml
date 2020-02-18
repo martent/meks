@@ -2,7 +2,7 @@
 %section.box.show
   %h1.box-title= h1
   .box-content.basic.form-data
-    - if can? :manage, Refugee
+    - if can? :manage, Home
       .form-group
         = link_to 'Redigera', edit_home_path(@home), class: 'btn btn-default'
     = form_for @home, html: { class: 'basic' } do |f|
@@ -22,6 +22,10 @@
       = show_attribute('home.languages', @home.languages.map(&:name).join(', '))
       = show_attribute('home.use_placement_specification', @home.use_placement_specification? ? 'Ja' : 'Nej')
       = show_attribute('home.comment', @home.comment)
+
+      %h2.group-title Ekonomi
+      = show_attribute('Form av kostnad', I18n.t("simple_form.options.home.type_of_cost.#{@home.type_of_cost}"))
+      = show_attribute('Dygnskostnader (kr)', @home.costs.map { |cost| "#{cost.amount} kr (#{cost.start_date} till #{cost.end_date})" }.join('<br>'))
 
       %h2.group-title Tillgänglighet
       = show_attribute('Aktuella placeringar', @placements.to_a.size)
@@ -52,13 +56,13 @@
           %tbody
             - @placements.each do |placement|
               %tr
-                %td= link_to placement.refugee.name, placement.refugee
-                %td= placement.refugee.dossier_number
-                %td= placement.refugee.ssn
+                %td= link_to placement.person.name, placement.person
+                %td= placement.person.dossier_number
+                %td= placement.person.ssn
                 %td
-                  - if placement.refugee.gender.present?
-                    = placement.refugee.gender.name
-                %td= placement.refugee.countries.map(&:name).join(', ')
+                  - if placement.person.gender.present?
+                    = placement.person.gender.name
+                %td= placement.person.countries.map(&:name).join(', ')
                 %td.date= placement.moved_in_at
-                %td= placement.refugee.municipality.name if placement.refugee.municipality.present?
-                %td= placement.refugee.municipality_placement_migrationsverket_at
+                %td= placement.person.municipality.name if placement.person.municipality.present?
+                %td= placement.person.municipality_placement_migrationsverket_at

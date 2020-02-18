@@ -1,0 +1,9 @@
+.fields_for_group
+  = pec.input :sub_group, label: 'Extra utgift' do
+    = pec.input_field :_destroy, as: :hidden, class: :destroy
+    .input_group
+      = pec.input :date, as: :string, wrapper: :datepicker
+      = pec.input :amount
+      = pec.input :comment
+    .input-group
+      %button.btn.btn-sm.btn-danger.remove.group{ type: :button }= "Radera extra utgiften"

@@ -1,0 +1,15 @@
+- title "Redigera insatsen"
+%section.box.index
+  %h1.box-title= h1
+  .box-content
+    = simple_form_for @extra_contribution, url: person_extra_contribution_path(@person, @extra_contribution), html: { class: "basic" } do |f|
+      = f.error_notification class: "warning"
+      = render 'form', f: f
+
+- if can?(:destroy, ExtraContribution)
+  %section.box.show.user.danger-zone
+    %h1.box-title Riskområde
+    .box-content.basic.form-data
+      %section.misc
+        %p= "Insatsen kommer att raderas permanent. Detta går inte att ångra."
+        .delete= button_to 'Radera insatsen permanent', person_extra_contribution_path(@person, @extra_contribution), method: :delete, data: { confirm: 'Är du säker på att du vill radera placeringen permanent?' }, class: "btn btn-danger btn-default"

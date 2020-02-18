@@ -1,0 +1,19 @@
+.box-content
+  = simple_form_for @rate_category, html: { class: "basic home" } do |f|
+    = f.error_notification class: "warning"
+
+    %h2.group-title Schablon
+    = show_attribute('rate_category.human_name', @rate_category.human_name)
+    = show_attribute('rate_category.age', "#{@rate_category.qualifier[:min_age]}–#{@rate_category.qualifier[:max_age]}")
+    -# = show_attribute('rate_category.description', @rate_category.description.gsub(/\n/, '<br>'))
+
+    %h2.group-title Ekonomi
+    .terms
+      = f.simple_fields_for :rates do |s|
+        = render "fields_for_rate", s: s
+      .form-group
+        %span.control-label
+        .controls
+          = add_rates_button "Lägg till belopp", f
+
+    = render 'application/submit', form: f, cancel_path: rate_categories_path
